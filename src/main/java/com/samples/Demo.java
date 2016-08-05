@@ -14,6 +14,10 @@ public class Demo {
             //System.out.println(beanname);
         }
         Circle circle = ((CircleDao)context.getBean("circleDao")).getCircle(2);
+        Circle circle2 = ((CircleDao)context.getBean("circleDao")).getCircle2(2);
+        Circle circle3 = ((CircleDao)context.getBean("circleDao")).getCircle3(1);
         System.out.println(circle.getName());
+        System.out.println(circle2.getName());
+        System.out.println(circle3.getName());
     }
 }

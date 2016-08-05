@@ -1,8 +1,11 @@
 package com.samples;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,11 +18,17 @@ import java.sql.SQLException;
 public class CircleDao {
     @Autowired
     Connection conn;
-    Circle circle = null;
-    PreparedStatement ps = null;
+    @Autowired
+    DataSource dataSource;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
+
     String getCircleSQL = "select * from circle where id=?";
 
     public Circle getCircle(int id) {
+        Circle circle = null;
+        PreparedStatement ps = null;
         ResultSet rs = null;
         try{
             ps = conn.prepareStatement(getCircleSQL);
@@ -38,6 +47,39 @@ public class CircleDao {
             }catch(Exception ex) {}
         }
         return null;
+    }
+    public Circle getCircle2(int id) {
+        Circle circle = null;
+        PreparedStatement ps = null;
+        Connection conn = null;
+        ResultSet rs = null;
+        try {
+            conn = dataSource.getConnection();
+            ps = conn.prepareStatement(getCircleSQL);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if(rs.next()) {
+                return new Circle(id, rs.getString("name"));
+            }
+        }catch(Exception ex) {
+            System.out.println("SQL exception "+ex);
+            System.exit(9);
+        }finally{
+            try{
+                ps.close();
+                rs.close();
+            }catch(Exception ex) {}
+        }
+        return null;
+    }
+    public Circle getCircle3(int id) {
+        Circle c = jdbcTemplate.query(getCircleSQL,new Object[] {id},new RowMapper<Circle>(){
+            public Circle mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Circle circle = new Circle(rs.getInt("id"),rs.getString("name"));
+                return circle;
+            }
+        }).get(0);
+        return c;
     }
 
 }
