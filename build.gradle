@@ -15,5 +15,10 @@ dependencies {
     compile 'org.apache.derby:derbyclient:+'
     compile 'org.springframework:spring-context:+'
     compile 'org.springframework:spring-jdbc:+'
+    compile 'org.springframework:spring-hibernate:+'
     compile 'org.apache.commons:commons-dbcp2:+'
+    compile 'org.hibernate:hibernate-core:+'
+    compile 'org.slf4j:slf4j-api:+'
+    compile 'ch.qos.logback:logback-core:+'
+    compile 'ch.qos.logback:logback-classic:+'
 }
